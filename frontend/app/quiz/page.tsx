@@ -105,7 +105,8 @@ export default function QuizPage() {
   };
 
   const handleSubmitQuiz = () => {
-    setShowResults(true);
+    const score = calculateScore();
+    router.push(`/result?score=${score}&total=${quiz.length}`);
   };
 
   const calculateScore = () => {
@@ -148,27 +149,15 @@ export default function QuizPage() {
             selectedAnswers={selectedAnswers}
             onAnswerChange={handleAnswerChange}
           />
-          {!showResults && (
-            <Button
-              onClick={handleSubmitQuiz}
-              disabled={loading}
-              className="relative overflow-hidden group w-full mt-6 bg-transparent hover:bg-transparent text-neon-cyan border-2 border-neon-cyan rounded-lg px-6 py-3 text-lg transition-all duration-300"
-            >
-              <span className="relative z-10">Submit Quiz</span>
-              <span className="absolute inset-0 bg-neon-cyan opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-              <span className="absolute inset-0 -top-full bg-gradient-to-br from-neon-cyan to-neon-purple opacity-0 group-hover:top-0 group-hover:opacity-30 transition-all duration-500"></span>
-            </Button>
-          )}
-          {showResults && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="mt-8 text-center text-2xl font-bold text-neon-purple"
-            >
-              Your Score: {calculateScore()} / {quiz.length}
-            </motion.div>
-          )}
+          <Button
+            onClick={handleSubmitQuiz}
+            disabled={loading}
+            className="relative overflow-hidden group w-full mt-6 bg-transparent hover:bg-transparent text-neon-cyan border-2 border-neon-cyan rounded-lg px-6 py-3 text-lg transition-all duration-300"
+          >
+            <span className="relative z-10">Submit Quiz</span>
+            <span className="absolute inset-0 bg-neon-cyan opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+            <span className="absolute inset-0 -top-full bg-gradient-to-br from-neon-cyan to-neon-purple opacity-0 group-hover:top-0 group-hover:opacity-30 transition-all duration-500"></span>
+          </Button>
         </>
       )}    </div>
   );
