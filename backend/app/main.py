@@ -18,7 +18,7 @@ app.add_middleware(
     # ALLOW ALL ORIGINS (easier for initial setup).
     # In a strict production environment, replace ["*"] with your actual frontend URL.
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
