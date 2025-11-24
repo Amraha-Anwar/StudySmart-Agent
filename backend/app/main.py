@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 import os
 import shutil
+import tempfile
 from fastapi.middleware.cors import CORSMiddleware
 
 from .utils.pdf_reader import extract_text_from_pdf
@@ -14,15 +15,17 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    # ALLOW ALL ORIGINS (easier for initial setup).
+    # In a strict production environment, replace ["*"] with your actual frontend URL.
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Temporary directory for uploaded PDFs
-UPLOAD_DIR = "temp_pdfs"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# In serverless environments like Vercel, only /tmp is writable
+UPLOAD_DIR = tempfile.gettempdir()
 
 @app.post("/upload-pdf/")
 async def upload_pdf(file: UploadFile = File(...)):
@@ -31,8 +34,9 @@ async def upload_pdf(file: UploadFile = File(...)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Only PDF files are allowed."
         )
-
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    
+    # Use a unique filename or just the original filename in the temp dir
+    file_path = os.path.join(UPLOAD_DIR, f"temp_{file.filename}")
     try:
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
@@ -72,3 +76,4 @@ async def generate_quiz(input: QuizInput):
 @app.get("/")
 async def root():
     return {"message": "Welcome to StudySmart Agent Backend"}
+

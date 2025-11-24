@@ -17,7 +17,7 @@ export default function UploadPage() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/upload-pdf/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload-pdf/`, {
         method: "POST",
         body: formData,
       });

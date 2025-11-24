@@ -40,7 +40,7 @@ export default function QuizPage() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/upload-pdf/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload-pdf/`, {
         method: "POST",
         body: formData,
       });
@@ -70,7 +70,7 @@ export default function QuizPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8000/generate-quiz/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/generate-quiz/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
