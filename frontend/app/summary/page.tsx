@@ -13,6 +13,9 @@ export default function SummaryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Set backend URL from env variable, fallback to localhost
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
   useEffect(() => {
     // Retrieve extracted text from localStorage
     const storedExtractedText = localStorage.getItem("extractedText");
@@ -30,7 +33,7 @@ export default function SummaryPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/summarize/`, {
+      const response = await fetch(`${API_URL}/summarize/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +50,10 @@ export default function SummaryPage() {
       setSummary(data.summary);
       localStorage.setItem("generatedSummary", data.summary); // Store summary for potential future use
     } catch (err: unknown) {
-      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred during summarization.");
+      setError(
+        (err instanceof Error ? err.message : String(err)) ||
+          "An unexpected error occurred during summarization."
+      );
       console.error("Summarization error:", err);
     } finally {
       setLoading(false);
@@ -62,15 +68,11 @@ export default function SummaryPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-4">
       {loading && (
-        <div className="text-center text-neon-cyan py-8">Loading...</div> // Replace with a spinner later
+        <div className="text-center text-neon-cyan py-8">Loading...</div>
       )}
-      {error && (
-        <div className="text-center text-red-500 py-8">{error}</div>
-      )}
-      {summary && (
-        <SummaryCard summary={summary} />
-      )}
-      {!loading && !error && summary && ( // Only show button if summary is available
+      {error && <div className="text-center text-red-500 py-8">{error}</div>}
+      {summary && <SummaryCard summary={summary} />}
+      {!loading && !error && summary && (
         <Button
           onClick={handleCreateQuiz}
           className="relative overflow-hidden group w-full mt-6 bg-transparent hover:bg-transparent text-neon-cyan border-2 border-neon-cyan rounded-lg px-6 py-3 text-lg transition-all duration-300"

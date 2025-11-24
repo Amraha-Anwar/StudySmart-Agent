@@ -8,8 +8,6 @@ import { PdfUpload } from "@/components/pdf-upload";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-
-
 export default function QuizPage() {
   const router = useRouter();
   const [extractedText, setExtractedText] = useState<string | null>(null);
@@ -19,6 +17,9 @@ export default function QuizPage() {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  // Set backend URL from env variable, fallback to localhost
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     // Retrieve extracted text from localStorage
@@ -40,7 +41,7 @@ export default function QuizPage() {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload-pdf/`, {
+      const response = await fetch(`${API_URL}/upload-pdf/`, {
         method: "POST",
         body: formData,
       });
@@ -70,7 +71,7 @@ export default function QuizPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/generate-quiz/`, {
+      const response = await fetch(`${API_URL}/generate-quiz/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +123,7 @@ export default function QuizPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-4">
       {loading && (
-        <div className="text-center text-neon-cyan py-8">Loading...</div> // Replace with a spinner later
+        <div className="text-center text-neon-cyan py-8">Loading...</div>
       )}
       {error && (
         <div className="text-center text-red-500 py-8">{error}</div>
@@ -159,6 +160,7 @@ export default function QuizPage() {
             <span className="absolute inset-0 -top-full bg-gradient-to-br from-neon-cyan to-neon-purple opacity-0 group-hover:top-0 group-hover:opacity-30 transition-all duration-500"></span>
           </Button>
         </>
-      )}    </div>
+      )}
+    </div>
   );
 }

@@ -13,9 +13,14 @@ from .agents.agent_schema import SummarizerInput, SummarizerOutput, QuizInput, Q
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",               # for dev
+    "https://study-smart-agent.vercel.app"     # for production
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allows all origins
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
