@@ -1,0 +1,17 @@
+# This file is used by Render to automatically configure your backend service.
+services:
+  - type: web
+    name: studysmart-agent-backend
+    env: python
+    # Ensure you are using a Python version compatible with your dependencies
+    pythonVersion: "3.11"
+    # Build command to install dependencies
+    buildCommand: "pip install -r requirements.txt"
+    # Start command to run the FastAPI app
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    # Optional: Define environment variables here or in the Render dashboard
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false # Set this in the Render dashboard for security
+      - key: Base_URL
+        sync: false # Set this in the Render dashboard for security
