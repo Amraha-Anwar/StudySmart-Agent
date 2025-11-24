@@ -123,9 +123,4 @@ The application will dynamically render the appropriate input field for each que
 
 ## Screenshots
 
-*(Placeholder for screenshots of the application)*
-
-- *Homepage*
-- *PDF Upload*
-- *Summary Page*
-- *Quiz Page*
+![UI](/frontend/public/images/ui.png)

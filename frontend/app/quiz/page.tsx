@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QuizQuestion } from "@/lib/types";
 import { QuizCard } from "@/components/quiz-card";
+import { PdfUpload } from "@/components/pdf-upload";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -17,6 +18,7 @@ export default function QuizPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     // Retrieve extracted text from localStorage
@@ -25,10 +27,44 @@ export default function QuizPage() {
       setExtractedText(storedExtractedText);
       fetchQuiz(storedExtractedText);
     } else {
-      setError("No text found to generate quiz from. Please upload a PDF first.");
+      // No text found, so we will show the upload component
       setLoading(false);
     }
   }, []);
+
+  const handleFileUpload = async (file: File) => {
+    setUploading(true);
+    setError(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://localhost:8000/upload-pdf/", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to upload PDF.");
+      }
+
+      const data = await response.json();
+      const text = data.extracted_text;
+      localStorage.setItem("extractedText", text);
+      setExtractedText(text);
+      
+      // After upload, generate quiz directly
+      await fetchQuiz(text);
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred during upload.");
+      console.error("Upload error:", err);
+      setLoading(false); // Ensure loading is false so error shows
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const fetchQuiz = async (text: string) => {
     setLoading(true);
@@ -90,7 +126,22 @@ export default function QuizPage() {
       {error && (
         <div className="text-center text-red-500 py-8">{error}</div>
       )}
-      {!loading && !error && quiz.length > 0 && (
+      
+      {!loading && !error && !extractedText && (
+        <div className="flex flex-col items-center w-full max-w-lg space-y-6">
+            <p className="text-xl text-neon-cyan font-semibold text-center">
+                Upload a PDF to generate a quiz
+            </p>
+            <PdfUpload 
+                onFileUpload={handleFileUpload} 
+                loading={uploading} 
+                error={null} 
+                buttonLabel="Generate Quiz"
+            />
+        </div>
+      )}
+
+      {!loading && !error && extractedText && quiz.length > 0 && (
         <>
           <QuizCard
             quiz={quiz}

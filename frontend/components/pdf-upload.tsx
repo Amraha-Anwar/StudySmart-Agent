@@ -11,9 +11,10 @@ interface PdfUploadProps {
   onFileUpload: (file: File) => void;
   loading: boolean;
   error: string | null;
+  buttonLabel?: string;
 }
 
-export function PdfUpload({ onFileUpload, loading, error }: PdfUploadProps) {
+export function PdfUpload({ onFileUpload, loading, error, buttonLabel = "Summarize PDF" }: PdfUploadProps) {
   const [file, setFile] = useState<File | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -61,7 +62,7 @@ export function PdfUpload({ onFileUpload, loading, error }: PdfUploadProps) {
           disabled={!file || loading}
           className="relative overflow-hidden group w-full mt-6 bg-transparent hover:bg-transparent text-neon-purple border-2 border-neon-purple rounded-lg px-6 py-3 text-lg transition-all duration-300"
         >
-          <span className="relative z-10">{loading ? "Uploading..." : "Summarize PDF"}</span>
+          <span className="relative z-10">{loading ? "Uploading..." : buttonLabel}</span>
           <span className="absolute inset-0 bg-neon-purple opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
           <span className="absolute inset-0 -top-full bg-gradient-to-br from-neon-purple to-neon-cyan opacity-0 group-hover:top-0 group-hover:opacity-30 transition-all duration-500"></span>
         </Button>
