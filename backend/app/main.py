@@ -15,10 +15,13 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    # ALLOW ALL ORIGINS (easier for initial setup).
-    # In a strict production environment, replace ["*"] with your actual frontend URL.
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://study-smart-agent.vercel.app",
+        "https://study-smart-agent-q5uz0i8je-amraha-anwars-projects.vercel.app",
+        "https://studysmart-agent.vercel.app" 
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
