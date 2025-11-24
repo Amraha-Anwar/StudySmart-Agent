@@ -1,194 +1,121 @@
-
-📘 GEMINI.md
-STUDYSMART-AGENT
-🧩 Project Summary
-
-StudySmart-Agent is an AI-powered learning tool that helps students study smarter by:
-
-Extracting text from uploaded PDFs.
-
-Summarizing the notes cleanly.
-
-Generating quizzes (MCQs or mixed) directly from the original PDF text.
-
-The project uses:
-
-Frontend: Next.js, TypeScript, Shadcn UI
-
-Backend: Python, FastAPI, OpenAI Agents SDK
-
-PDF Processing: PyPDF
-
-Agent Execution: Gemini CLI
-
-Tool Provider: Context7 MCP (already connected)
-
-This specification ensures simple logic, clean schema, and predictable agent behavior.
-
-🎯 Core Requirements
-✔ PDF Summarizer
-
-User uploads a PDF.
-
-Backend extracts its text using PyPDF.
-
-Summarizer Agent receives structured input:
-
-{ "pdf_text": "full extracted text" }
-
-
-Returns:
-
-{ "summary": "clean summarized notes" }
-
-✔ Quiz Generator
-
-Uses original extracted text, not summary.
-
-Input to Quiz Agent:
-
-{
-  "pdf_text": "full text",
-  "question_count": 10,
-  "quiz_type": "mcq" | "mixed"
-}
-
-
-Returns:
-
-{
-  "quiz": [
-    {
-      "question": "...",
-      "options": ["A","B","C","D"],
-      "answer": "A"
-    }
-  ]
-}
-
-🏗 Tech Stack
-Frontend
-
-Next.js 15+ (App Router)
-
-TypeScript
-tailwind css
-Shadcn UI
-
-Neon/Glassy Dark Mode Theme
-
-Smooth modern animations
-
-Backend
-
-FastAPI
-
-Python 3.10+
-
-uv
-
-OpenAI Agents SDK (simple, official patterns)
-
-PyPDF
-
-MCP
-
-Context7 MCP is already connected
-
-Gemini CLI automatically loads all MCP tools
-
-Focus strictly on integrating the agent with Gemini and Context7 MCP for PDF summarization and quiz generation.
-
-No "Hallucinated" Features: Only implement what the task specifies.
-
-API Configuration:
-
-Use the OpenAI Agents SDK Python Library configured for Gemini.
-
-Base URL: https://generativelanguage.googleapis.com/v1beta/openai/
-
-API Key: Load GEMINI_API_KEY from environment variables.
-
-Model: Use OpenaiChatCompletionModel adapted for Gemini.
-
-SDK Specificity: You are using openai-agents SDK. This is NOT the standard openai library.
-
-🎨 UI / UX Requirements (Very Important)
-🔥 Build a fully interactive, modern, dark-mode UI
-
-Requirements:
-
-1. Navbar (Glass + Neon)
-
-A glassy translucent navbar at the top.
-
-On the top-left corner:
-→ Write the website name “StudySmart Agent”
-→ Beautiful modern font (semi-bold, glowing effect)
-
-On the top-right corner:
-→ Buttons: PDF Summarizer, Quiz Generator
-→ Add hover animations (scale + glow)
-
-Navbar fixed at top, slight blur effect.
-
-2. Hero Section (Center of Screen)
-
-A beautiful neon-glow heading in center:
-“Study Smarter, Not Harder.”
-
-Sub-heading:
-“Upload your notes → Get clean summaries → Generate smart quizzes.”
-
-Smooth fade-in animations.
-
-Dark mode background with:
-
-subtle gradient
-
-neon accents
-
-maybe particles or glowing blobs for interactive feel
-
-3. Color Palette (Recommended)
-
-Deep dark background: #0A0A0F
-
-Neon Cyan: #00F5FF
-
-Neon Purple: #A966FF
-
-Glass White: rgba(255, 255, 255, 0.1)
-
-4. UI Cards
-
-Summaries and quizzes shown inside:
-
-Glassmorphic cards
-
-Soft glowing borders
-
-Smooth transitions
-
-5. Buttons & Components
-
-Use Shadcn UI base components
-
-Add custom neon/glass styles
-
-Hover: glow + slight scale
-
-Buttons should feel “alive”
-
-6. Dark Mode Only
-
-No light mode
-
-Everything should be modern, futuristic, and minimal
-
-Fonts slightly rounded, soft glow titles
-
-📂 Clean Folder Structure
+# StudySmart-Agent Project Specification
+
+## Project Summary
+StudySmart-Agent is an AI-powered learning tool designed to help students study smarter by:
+- Extracting text from uploaded PDFs.
+- Summarizing the extracted text into clean notes.
+- Generating quizzes (Multiple Choice Questions or mixed types) directly from the original PDF text.
+
+The project leverages the following technologies:
+- **Frontend**: Next.js, TypeScript, Shadcn UI
+- **Backend**: Python, FastAPI, OpenAI Agents SDK
+- **PDF Processing**: PyPDF
+- **Agent Execution**: Gemini CLI
+- **Tool Provider**: Context7 MCP (already connected)
+
+This specification focuses on ensuring simple logic, clean schema, and predictable agent behavior.
+
+## Core Requirements
+
+### PDF Summarizer
+- User uploads a PDF.
+- Backend extracts its text using PyPDF.
+- The Summarizer Agent receives structured input:
+  ```json
+  {
+    "pdf_text": "full extracted text"
+  }
+  ```
+- Returns:
+  ```json
+  {
+    "summary": "clean summarized notes"
+  }
+  ```
+
+### Quiz Generator
+- Uses original extracted text, not summary.
+- Input to Quiz Agent:
+  ```json
+  {
+    "pdf_text": "full text",
+    "question_count": 10,
+    "quiz_type": "mcq" | "mixed"
+  }
+  ```
+- Returns:
+  ```json
+  {
+    "quiz": [
+      {
+        "question": "...",
+        "options": ["A","B","C","D"],
+        "answer": "A"
+      }
+    ]
+  }
+  ```
+
+## Tech Stack
+
+### Frontend
+- Next.js 15+ (App Router)
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Neon/Glassy Dark Mode Theme
+- Smooth modern animations
+
+### Backend
+- FastAPI
+- Python 3.10+
+- `uv` (package installer)
+- OpenAI Agents SDK (simple, official patterns)
+- PyPDF
+- MCP (Model-Context Protocol)
+
+### API Configuration
+- Use the OpenAI Agents SDK Python Library configured for Gemini.
+- Base URL: `https://generativelanguage.googleapis.com/v1beta/openai/`
+- API Key: Load `GEMINI_API_KEY` from environment variables.
+- Model: Use `OpenaiChatCompletionModel` adapted for Gemini.
+- **Note**: This project uses the `openai-agents` SDK, which is distinct from the standard `openai` library.
+
+## UI / UX Requirements (Very Important)
+The application requires a fully interactive, modern, dark-mode UI with the following features:
+
+### 1. Navbar (Glass + Neon)
+- A glassy translucent navbar fixed at the top, with a slight blur effect.
+- **Top-left**: Website name “StudySmart Agent” in a beautiful modern font (semi-bold, glowing effect).
+- **Top-right**: Buttons for "PDF Summarizer" and "Quiz Generator" with hover animations (scale + glow).
+
+### 2. Hero Section (Center of Screen)
+- A beautiful neon-glow heading in the center: “Study Smarter, Not Harder.”
+- Sub-heading: “Upload your notes → Get clean summaries → Generate smart quizzes.”
+- Smooth fade-in animations.
+- Dark mode background with subtle gradient, neon accents, and optional interactive particles or glowing blobs.
+
+### 3. Color Palette (Recommended)
+- Deep dark background: `#0A0A0F`
+- Neon Cyan: `#00F5FF`
+- Neon Purple: `#A966FF`
+- Glass White: `rgba(255, 255, 255, 0.1)`
+
+### 4. UI Cards
+- Summaries and quizzes displayed inside glassmorphic cards with soft glowing borders and smooth transitions.
+
+### 5. Buttons & Components
+- Utilize Shadcn UI base components.
+- Apply custom neon/glass styles.
+- Hover effects: glow + slight scale, making buttons feel “alive”.
+
+### 6. Dark Mode Only
+- No light mode is required.
+- The overall aesthetic should be modern, futuristic, and minimal.
+- Fonts should be slightly rounded with soft glow titles.
+
+## Clean Folder Structure
+```
 studysmart-agent/
 │
 ├── backend/
@@ -210,6 +137,7 @@ studysmart-agent/
 │   │   ├── upload/page.tsx
 │   │   ├── summary/page.tsx
 │   │   ├── quiz/page.tsx
+│   │   ├── result/page.tsx     # Newly added result page
 │   └── components/
 │       ├── navbar.tsx
 │       ├── ui/
@@ -219,44 +147,32 @@ studysmart-agent/
 │
 ├── GEMINI.md
 └── README.md
+```
 
+## Frontend Flow (Next.js)
 
+### Homepage (`/`)
+- Neon-glass hero section.
+- Big heading + subheading.
+- Buttons: "Upload PDF", "Generate Quiz".
+- Animated scroll cues.
 
-🌐 Frontend Flow (Next.js)
-Homepage (/)
+### Upload Page (`/upload`)
+- PDF dropzone.
+- Sends file → FastAPI extract endpoint.
+- Stores extracted text (e.g., in localStorage).
+- Redirects to `/summary`.
 
-Neon-glass hero section
+### Summary Page (`/summary`)
+- Shows summary in a glass card.
+- "Create Quiz" button.
 
-Big heading + subheading
+### Quiz Page (`/quiz`)
+- Shows a list of questions.
+- Answers are locked after selection, and feedback (correct/incorrect) is provided.
+- If no PDF is uploaded, provides an option to upload directly.
 
-Buttons:
-
-“Upload PDF”
-
-“Generate Quiz”
-
-Animated scroll cues
-
-/upload
-
-PDF dropzone
-
-Sends file → FastAPI extract endpoint
-
-Stores extracted text
-
-Redirect to /summary
-
-/summary
-
-Show summary in glass card
-
-“Create Quiz” button
-
-/quiz
-
-Show list of questions
-
-Options highlighted on click
-
-Clean, readable, dark mode card UI
+### Result Page (`/result`)
+- Displays quiz score and total questions.
+- Provides encouraging words or quotes.
+- Offers navigation back to Home or to start a New Quiz.
