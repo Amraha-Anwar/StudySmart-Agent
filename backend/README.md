@@ -51,7 +51,7 @@ The following endpoints are available:
     {
       "pdf_text": "...",
       "question_count": 10,
-      "quiz_type": "mixed" // "mcq" or "mixed"
+      "quiz_type": "mcq" // only "mcq" is supported
     }
     ```
   - **Response:** A JSON object with the quiz: `{"quiz": [...]}`.

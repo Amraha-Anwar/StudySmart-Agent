@@ -1,9 +1,8 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState, Suspense } from "react";
 
 const quotes = [
@@ -15,6 +14,25 @@ const quotes = [
   "Don't watch the clock; do what it does. Keep going.",
   "The future belongs to those who believe in the beauty of their dreams."
 ];
+
+// A teacher's red-pen loop around the score
+function PenCircle() {
+  const reduceMotion = useReducedMotion();
+  return (
+    <svg viewBox="0 0 260 150" className="pointer-events-none absolute inset-0 h-full w-full drop-shadow-[0_0_6px_rgba(194,54,68,0.55)]" aria-hidden="true">
+      <motion.path
+        d="M196 22C160 6 82 8 42 34C8 57 12 108 64 128C116 148 206 140 238 102C262 72 246 34 204 20C180 12 150 10 124 14"
+        fill="none"
+        className="stroke-margin"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        initial={{ pathLength: reduceMotion ? 1 : 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.8, delay: 0.15, ease: [0.65, 0, 0.35, 1] }}
+      />
+    </svg>
+  );
+}
 
 function ResultContent() {
   const searchParams = useSearchParams();
@@ -29,10 +47,11 @@ function ResultContent() {
 
   if (!score || !total) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] text-neon-cyan">
-        <p>No result data found.</p>
-        <Button onClick={() => router.push("/")} className="mt-4 bg-neon-purple hover:bg-neon-cyan text-white">
-          Go Home
+      <div className="lift rounded-xl bg-sheet p-6 text-ink sm:p-8">
+        <h1 className="text-2xl font-bold tracking-[-0.02em]">No score to show</h1>
+        <p className="mt-2 text-ink-soft">Finish a quiz and your score will appear here.</p>
+        <Button onClick={() => router.push("/")} className="mt-6">
+          Back to home
         </Button>
       </div>
     );
@@ -40,76 +59,59 @@ function ResultContent() {
 
   const percentage = (Number(score) / Number(total)) * 100;
   let message = "";
-  let messageColor = "text-white";
 
   if (percentage >= 90) {
-    message = "Outstanding Performance! 🌟";
-    messageColor = "text-neon-cyan";
+    message = "Excellent. You know this material well.";
   } else if (percentage >= 70) {
-    message = "Great Job! Keep it up! 👍";
-    messageColor = "text-green-400";
+    message = "Good work. Go back over the questions you missed.";
   } else if (percentage >= 50) {
-    message = "Good Effort! You're getting there! 💪";
-    messageColor = "text-yellow-400";
+    message = "You're getting there. Read the summary again, then retake the quiz.";
   } else {
-    message = "Keep Practicing! Don't give up! 🔥";
-    messageColor = "text-orange-400";
+    message = "Worth another pass. Start with the summary, then try a new quiz.";
   }
 
   return (
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-w-md"
-    >
-      <Card className="glassmorphic-card text-center border-neon-purple shadow-[0_0_20px_rgba(169,102,255,0.2)] bg-black/40 backdrop-blur-xl">
-        <CardHeader>
-          <CardTitle className="text-4xl font-bold text-neon-cyan mb-2 drop-shadow-[0_0_10px_rgba(0,245,255,0.5)]">
-            Quiz Completed!
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="py-6 relative">
-            <div className="absolute inset-0 bg-neon-purple/10 blur-3xl rounded-full transform scale-150"></div>
-            <p className="text-gray-300 text-lg relative z-10">Your Score</p>
-            <h1 className="text-7xl font-extrabold text-neon-purple drop-shadow-[0_0_15px_rgba(169,102,255,0.8)] mt-2 relative z-10">
-              {score} <span className="text-3xl text-gray-500 font-normal">/ {total}</span>
-            </h1>
-          </div>
+    <div className="lift rounded-xl bg-sheet p-6 text-ink sm:p-10">
+      <h1 className="text-sm font-semibold text-ink-soft">Your score</h1>
 
-          <div className="space-y-4">
-            <h3 className={`text-2xl font-bold ${messageColor} drop-shadow-md`}>{message}</h3>
-            <blockquote className="text-gray-300 italic border-l-4 border-neon-cyan pl-4 py-2 mx-4 bg-white/5 rounded-r-lg">
-              "{quote}"
-            </blockquote>
-          </div>
+      <div className="relative mt-2 flex h-[150px] w-[260px] max-w-full items-center justify-center">
+        <PenCircle />
+        <p className="relative font-extrabold tracking-[-0.04em]">
+          <span className="text-7xl tabular-nums">{score}</span>
+          <span className="ml-1 text-3xl text-ink-soft tabular-nums">/{total}</span>
+        </p>
+      </div>
 
-          <div className="flex gap-4 justify-center mt-8">
-            <Button
-              onClick={() => router.push("/")}
-              variant="outline"
-              className="border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black transition-all duration-300 font-semibold"
-            >
-              Home
-            </Button>
-            <Button
-              onClick={() => router.push("/upload")}
-              className="bg-neon-purple hover:bg-neon-cyan text-white hover:text-black transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(169,102,255,0.4)] hover:shadow-[0_0_20px_rgba(0,245,255,0.6)]"
-            >
-              Upload New PDF
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
+      <div className="result-rise">
+        <p className="mt-6 text-2xl font-bold leading-snug tracking-[-0.02em]">{message}</p>
+        <p className="mt-1 text-ink-soft tabular-nums">{Math.round(percentage)}% correct</p>
+
+        {quote && (
+          <blockquote className="mt-8 border-l-[3px] border-pink pl-4 font-serif text-lg italic leading-relaxed text-ink">
+            {quote}
+          </blockquote>
+        )}
+
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <Button onClick={() => router.push("/quiz")} size="lg">
+            Make another quiz
+          </Button>
+          <Button onClick={() => router.push("/upload")} size="lg" variant="outline">
+            Upload a new PDF
+          </Button>
+          <Button onClick={() => router.push("/")} size="lg" variant="ghost">
+            Home
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function ResultPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-4">
-      <Suspense fallback={<div className="text-neon-cyan">Loading result...</div>}>
+    <div className="mx-auto max-w-2xl px-4 pb-24 pt-12 sm:px-6 sm:pt-16">
+      <Suspense fallback={<p className="text-on-page-soft">Loading your score…</p>}>
         <ResultContent />
       </Suspense>
     </div>

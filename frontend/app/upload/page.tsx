@@ -29,6 +29,7 @@ export default function UploadPage() {
 
       const data = await response.json();
       localStorage.setItem("extractedText", data.extracted_text);
+      localStorage.setItem("pdfName", data.filename ?? file.name);
       router.push("/summary");
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : String(err)) || "An unexpected error occurred during upload.");
@@ -39,8 +40,15 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-4">
-      <PdfUpload onFileUpload={handleFileUpload} loading={loading} error={error} />
+    <div className="mx-auto max-w-xl px-4 pb-24 pt-12 sm:px-6 sm:pt-16">
+      <h1 className="glow-text pb-1 text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">Summarize a PDF</h1>
+      <p className="mt-4 text-lg leading-relaxed text-on-page-soft">
+        Add your lecture notes, slides or a reading. You&apos;ll get a summary first, and can make a quiz from
+        the same file afterwards.
+      </p>
+      <div className="mt-10">
+        <PdfUpload onFileUpload={handleFileUpload} loading={loading} error={error} />
+      </div>
     </div>
   );
 }

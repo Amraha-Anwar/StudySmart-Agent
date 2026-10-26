@@ -4,7 +4,7 @@
 StudySmart-Agent is an AI-powered learning tool designed to help students study smarter by:
 - Extracting text from uploaded PDFs.
 - Summarizing the extracted text into clean notes.
-- Generating quizzes (Multiple Choice Questions or mixed types) directly from the original PDF text.
+- Generating multiple-choice quizzes directly from the original PDF text.
 
 The project leverages the following technologies:
 - **Frontend**: Next.js, TypeScript, Shadcn UI
@@ -40,7 +40,7 @@ This specification focuses on ensuring simple logic, clean schema, and predictab
   {
     "pdf_text": "full text",
     "question_count": 10,
-    "quiz_type": "mcq" | "mixed"
+    "quiz_type": "mcq"
   }
   ```
 - Returns:
@@ -50,7 +50,7 @@ This specification focuses on ensuring simple logic, clean schema, and predictab
       {
         "question": "...",
         "options": ["A","B","C","D"],
-        "answer": "A"
+        "answer": "A"  // exact text of the correct option
       }
     ]
   }

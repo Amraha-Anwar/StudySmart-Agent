@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SummaryCard } from "@/components/summary-card";
+import { Working } from "@/components/working";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 
 export default function SummaryPage() {
   const router = useRouter();
-  const [extractedText, setExtractedText] = useState<string | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
+  const [pdfName, setPdfName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,10 +18,10 @@ export default function SummaryPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
+    setPdfName(localStorage.getItem("pdfName"));
     // Retrieve extracted text from localStorage
     const storedExtractedText = localStorage.getItem("extractedText");
     if (storedExtractedText) {
-      setExtractedText(storedExtractedText);
       // Now send it to the backend for summarization
       fetchSummary(storedExtractedText);
     } else {
@@ -66,21 +67,40 @@ export default function SummaryPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-4">
+    <div className="mx-auto max-w-4xl px-4 pb-24 pt-12 sm:px-6 sm:pt-16">
+      <header className="mb-8">
+        <h1 className="glow-text pb-1 text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">Summary</h1>
+        {pdfName && <p className="mt-3 truncate text-on-page-soft">From {pdfName}</p>}
+      </header>
+
       {loading && (
-        <div className="text-center text-neon-cyan py-8">Loading...</div>
+        <Working
+          title="Summarizing your PDF"
+          detail="This usually takes 10 to 30 seconds. Longer documents can take up to a minute."
+        />
       )}
-      {error && <div className="text-center text-red-500 py-8">{error}</div>}
+
+      {error && (
+        <div role="alert" className="lift rounded-lg border-l-4 border-margin bg-sheet p-6 text-ink sm:p-8">
+          <p className="font-semibold text-margin">The summary couldn&apos;t be made.</p>
+          <p className="mt-1 text-ink-soft">{error}</p>
+          <Button asChild variant="outline" className="mt-6">
+            <Link href="/upload">Upload a PDF</Link>
+          </Button>
+        </div>
+      )}
+
       {summary && <SummaryCard summary={summary} />}
+
       {!loading && !error && summary && (
-        <Button
-          onClick={handleCreateQuiz}
-          className="relative overflow-hidden group w-full mt-6 bg-transparent hover:bg-transparent text-neon-cyan border-2 border-neon-cyan rounded-lg px-6 py-3 text-lg transition-all duration-300"
-        >
-          <span className="relative z-10">Create Quiz</span>
-          <span className="absolute inset-0 bg-neon-cyan opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-          <span className="absolute inset-0 -top-full bg-gradient-to-br from-neon-cyan to-neon-purple opacity-0 group-hover:top-0 group-hover:opacity-30 transition-all duration-500"></span>
-        </Button>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Button onClick={handleCreateQuiz} size="lg">
+            Make a quiz from this PDF
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/upload">Summarize a different PDF</Link>
+          </Button>
+        </div>
       )}
     </div>
   );

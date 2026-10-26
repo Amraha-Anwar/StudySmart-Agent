@@ -2,16 +2,20 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { FileText, FileUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; // Assuming Label is used for accessibility
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface PdfUploadProps {
   onFileUpload: (file: File) => void;
   loading: boolean;
   error: string | null;
   buttonLabel?: string;
+}
+
+function formatSize(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 export function PdfUpload({ onFileUpload, loading, error, buttonLabel = "Summarize PDF" }: PdfUploadProps) {
@@ -23,50 +27,69 @@ export function PdfUpload({ onFileUpload, loading, error, buttonLabel = "Summari
     }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
     accept: {
       "application/pdf": [".pdf"],
     },
     multiple: false,
+    disabled: loading,
   });
 
+  const rejected = fileRejections.length > 0 && !file;
+
   return (
-    <Card className="w-full max-w-lg bg-glass-white border-neon-cyan shadow-neon-cyan/50 shadow-lg text-neon-cyan">
-      <CardHeader>
-        <CardTitle className="text-3xl font-bold text-center text-neon-cyan text-neon-glow-cyan">Upload Your PDF</CardTitle>
-        <CardDescription className="text-center text-gray-300">
-          Drag and drop your PDF here, or click to select a file.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div
-          {...getRootProps()}
-          className="flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-lg cursor-pointer bg-gray-800/20 hover:bg-gray-700/20 transition-colors duration-200"
-          style={{ borderColor: isDragActive ? 'var(--neon-purple)' : 'var(--neon-cyan)' }}
-        >
-          <Input {...getInputProps()} />
-          {isDragActive ? (
-            <p className="text-neon-purple text-lg">Drop the files here ...</p>
-          ) : (
-            <p className="text-neon-cyan text-lg">
-              {file ? `Selected file: ${file.name}` : "Drag 'n' drop a PDF here, or click to select one"}
+    <div className="w-full">
+      <div
+        {...getRootProps()}
+        className={cn(
+          "lift flex cursor-pointer flex-col text-ink items-center justify-center rounded-lg border-2 border-dashed px-6 py-12 text-center transition-colors duration-150 sm:py-16",
+          isDragActive
+            ? "border-pen bg-pen-wash"
+            : file
+            ? "border-ink/30 bg-sheet"
+            : "border-rule bg-sheet hover:border-pen/50 hover:bg-pen-wash/60"
+        )}
+      >
+        <input {...getInputProps()} aria-label="Choose a PDF file" />
+        {file ? (
+          <>
+            <FileText className="size-8 text-pen" strokeWidth={1.5} />
+            <p className="mt-4 max-w-full truncate font-semibold">{file.name}</p>
+            <p className="mt-1 text-sm text-ink-soft">
+              {formatSize(file.size)}. Click or drop another file to replace it.
             </p>
-          )}
-        </div>
+          </>
+        ) : (
+          <>
+            <FileUp className="size-8 text-pen" strokeWidth={1.5} />
+            <p className="mt-4 font-semibold">
+              {isDragActive ? "Drop to add your PDF" : "Drop a PDF here, or click to browse"}
+            </p>
+            <p className="mt-1 text-sm text-ink-soft">One file at a time, with selectable text.</p>
+          </>
+        )}
+      </div>
 
-        {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+      {rejected && (
+        <p role="alert" className="mt-3 rounded-md bg-sheet px-3.5 py-2.5 text-sm font-medium text-margin">
+          That file isn&apos;t a PDF. Choose a file ending in .pdf.
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="mt-3 rounded-md bg-sheet px-3.5 py-2.5 text-sm font-medium text-margin">
+          {error}
+        </p>
+      )}
 
-        <Button
-          onClick={() => file && onFileUpload(file)}
-          disabled={!file || loading}
-          className="relative overflow-hidden group w-full mt-6 bg-transparent hover:bg-transparent text-neon-purple border-2 border-neon-purple rounded-lg px-6 py-3 text-lg transition-all duration-300"
-        >
-          <span className="relative z-10">{loading ? "Uploading..." : buttonLabel}</span>
-          <span className="absolute inset-0 bg-neon-purple opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-          <span className="absolute inset-0 -top-full bg-gradient-to-br from-neon-purple to-neon-cyan opacity-0 group-hover:top-0 group-hover:opacity-30 transition-all duration-500"></span>
-        </Button>
-      </CardContent>
-    </Card>
+      <Button
+        onClick={() => file && onFileUpload(file)}
+        disabled={!file || loading}
+        size="lg"
+        className="mt-5 w-full"
+      >
+        {loading ? "Uploading…" : buttonLabel}
+      </Button>
+    </div>
   );
 }

@@ -1,12 +1,11 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import * as RadioGroup from "@radix-ui/react-radio-group";
+import { Check, X } from "lucide-react";
 import React from "react";
 
-import { QuizQuestion } from "@/lib/types";
+import { QuizQuestion, resolveAnswer } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface QuizCardProps {
   quiz: QuizQuestion[];
@@ -14,122 +13,102 @@ interface QuizCardProps {
   onAnswerChange: (questionIndex: number, value: string) => void;
 }
 
+// Splits "B. Thylakoid" into its letter and text so the letter can sit in a badge
+function splitOption(option: string, index: number) {
+  const match = option.match(/^\s*([A-Da-d])\s*[.)]\s*(.*)$/);
+  return match
+    ? { letter: match[1].toUpperCase(), text: match[2] }
+    : { letter: String.fromCharCode(65 + index), text: option };
+}
+
 export function QuizCard({
   quiz,
   selectedAnswers = {}, // Provide default empty object
   onAnswerChange,
 }: QuizCardProps) {
-  const [submittedQuestions, setSubmittedQuestions] = React.useState<Set<number>>(new Set());
-
-  const handleLockQuestion = (index: number) => {
-    setSubmittedQuestions((prev) => {
-      const newSet = new Set(prev);
-      newSet.add(index);
-      return newSet;
-    });
-  };
-
   return (
-    <div className="space-y-6">
+    <ol className="lift divide-y divide-rule overflow-hidden rounded-xl bg-sheet text-ink">
       {quiz.map((q, qIndex) => {
-        const isLocked = submittedQuestions.has(qIndex);
-        const isCorrect =
-          selectedAnswers[qIndex]?.toLowerCase() === q.answer.toLowerCase();
+        const selected = selectedAnswers[qIndex];
+        // Answers lock as soon as an option is chosen
+        const isLocked = selected !== undefined;
+        const correctAnswer = resolveAnswer(q);
+        const isCorrect = selected === correctAnswer;
+        const correctIndex = q.options.indexOf(correctAnswer);
+        const questionId = `q${qIndex}`;
 
         return (
-          <Card key={qIndex} className="glassmorphic-card">
-            <CardHeader>
-              <CardTitle className="text-neon-cyan drop-shadow-neon-cyan">
-                Question {qIndex + 1}
-              </CardTitle>
+          <li key={qIndex} className="flex gap-3 p-5 sm:gap-5 sm:p-8">
+            <span className="w-6 shrink-0 pt-0.5 text-right text-sm font-semibold tabular-nums text-pen">
+              {qIndex + 1}
+            </span>
 
-              <CardDescription className="text-gray-400">
-                {q.options && Array.isArray(q.options)
-                  ? "Multiple Choice"
-                  : q.answer.toLowerCase() === "true" ||
-                    q.answer.toLowerCase() === "false"
-                  ? "True/False"
-                  : "Short Answer"}
-              </CardDescription>
-
-              <CardDescription className="text-gray-200 pt-2">
+            <div className="min-w-0 flex-1">
+              <p id={questionId} className="font-serif text-[1.125rem] leading-[1.55] sm:text-[1.1875rem]">
                 {q.question}
-              </CardDescription>
-            </CardHeader>
+              </p>
 
-            <CardContent>
-              {q.options && Array.isArray(q.options) ? (
-                <RadioGroup
-                  onValueChange={(value: string) => {
-                    onAnswerChange(qIndex, value);
-                    handleLockQuestion(qIndex);
-                  }}
-                  value={selectedAnswers[qIndex] ?? ""} // Safe access
-                  disabled={isLocked}
-                >
-                  {q.options.map((option, oIndex) => (
-                    <div
+              <RadioGroup.Root
+                aria-labelledby={questionId}
+                onValueChange={(value: string) => onAnswerChange(qIndex, value)}
+                value={selected ?? ""} // Safe access
+                disabled={isLocked}
+                className="mt-5 grid gap-2"
+              >
+                {q.options.map((option, oIndex) => {
+                  const { letter, text } = splitOption(option, oIndex);
+                  const isAnswer = isLocked && option === correctAnswer;
+                  const isWrongPick = isLocked && option === selected && !isCorrect;
+
+                  return (
+                    <RadioGroup.Item
                       key={oIndex}
-                      className="flex items-center space-x-2 my-2"
+                      value={option}
+                      className={cn(
+                        "group flex w-full items-start gap-3 rounded-md border px-3.5 py-3 text-left text-[0.9375rem] leading-snug transition-colors duration-150",
+                        !isLocked && "border-rule hover:border-pen/50 hover:bg-pen-wash/60",
+                        isAnswer && "border-correct bg-correct/[0.07] shadow-[0_0_18px_-4px_rgba(46,125,87,0.55)]",
+                        isWrongPick && "border-margin bg-margin/[0.06] shadow-[0_0_18px_-4px_rgba(194,54,68,0.5)]",
+                        isLocked && !isAnswer && !isWrongPick && "border-rule/70 text-ink-soft"
+                      )}
                     >
-                      <RadioGroupItem
-                        value={option}
-                        id={`q${qIndex}-o${oIndex}`}
-                      />
-                      <Label
-                        htmlFor={`q${qIndex}-o${oIndex}`}
-                        className="text-gray-300"
+                      <span
+                        className={cn(
+                          "grid size-6 shrink-0 place-items-center rounded-[4px] border text-xs font-semibold",
+                          !isLocked && "border-rule group-hover:border-pen/50 group-hover:text-pen",
+                          isAnswer && "border-correct bg-correct text-white",
+                          isWrongPick && "border-margin bg-margin text-white",
+                          isLocked && !isAnswer && !isWrongPick && "border-rule/70"
+                        )}
                       >
-                        {option}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={selectedAnswers[qIndex] || ""}
-                      onChange={(e) => onAnswerChange(qIndex, e.target.value)}
-                      className="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-neon-cyan disabled:opacity-50"
-                      placeholder="Your answer..."
-                      disabled={isLocked}
-                    />
-                    {!isLocked && (
-                      <Button
-                        onClick={() => handleLockQuestion(qIndex)}
-                        disabled={!selectedAnswers[qIndex]}
-                        variant="secondary"
-                        className="bg-neon-purple hover:bg-neon-cyan text-white"
-                      >
-                        Submit
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              )}
+                        {isAnswer ? (
+                          <Check className="size-3.5" strokeWidth={3} />
+                        ) : isWrongPick ? (
+                          <X className="size-3.5" strokeWidth={3} />
+                        ) : (
+                          letter
+                        )}
+                      </span>
+                      <span className="pt-0.5">{text}</span>
+                    </RadioGroup.Item>
+                  );
+                })}
+              </RadioGroup.Root>
 
-              {isLocked && selectedAnswers[qIndex] && (
-                <div className="mt-4 p-3 rounded-md bg-gray-900/50 border border-gray-700">
-                  <p
-                    className={`font-medium ${
-                      isCorrect ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    {isCorrect ? "✓ Correct!" : "✗ Incorrect"}
-                  </p>
-                  {!isCorrect && (
-                    <p className="text-gray-300 mt-1">
-                      Correct Answer: <span className="text-neon-cyan">{q.answer}</span>
-                    </p>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <p aria-live="polite" className={cn("text-sm font-semibold", isLocked && "mt-4")}>
+                {isLocked &&
+                  (isCorrect ? (
+                    <span className="text-correct">Correct.</span>
+                  ) : (
+                    <span className="text-margin">
+                      Incorrect. The answer is {correctIndex >= 0 ? splitOption(correctAnswer, correctIndex).letter : correctAnswer}.
+                    </span>
+                  ))}
+              </p>
+            </div>
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 }

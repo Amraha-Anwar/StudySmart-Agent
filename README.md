@@ -7,7 +7,7 @@ StudySmart Agent is an AI-powered learning tool that helps students study smarte
 - **PDF Text Extraction:** Upload a PDF and have its text extracted for further processing.
 - **Automated Summarization:** Get clean and concise summaries of your notes.
 - **Smart Quiz Generation:** Generate quizzes from the extracted text to test your knowledge.
-- **Multiple Quiz Types:** The quiz generator supports multiple-choice questions (MCQs), true/false questions, and short answer questions.
+- **Multiple-Choice Quizzes:** Each question has four options; answers lock once chosen and show instant feedback.
 
 ## Tech Stack
 
@@ -111,15 +111,9 @@ studysmart-agent/
 - `POST /summarize/`: Get a summary of the provided text.
 - `POST /generate-quiz/`: Generate a quiz from the provided text.
 
-## Quiz Types
+## Quiz Format
 
-The quiz generator supports the following question types:
-
-- **Multiple Choice (MCQ):** Questions with a set of options where you choose the correct one.
-- **True/False:** Questions that you answer with either "True" or "False".
-- **Short Answer:** Questions that require a brief written answer.
-
-The application will dynamically render the appropriate input field for each question type.
+Quizzes are multiple-choice only. Each question has four options (A–D), and the answer is always the exact text of the correct option.
 
 ## Screenshots
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 # --- Summarizer Agent Schemas ---
 
@@ -13,13 +13,13 @@ class SummarizerOutput(BaseModel):
 
 class QuizQuestion(BaseModel):
     question: str
-    options: Optional[List[str]]
+    options: List[str]
     answer: str
 
 class QuizInput(BaseModel):
     pdf_text: str
     question_count: int = 10
-    quiz_type: Literal["mcq", "mixed"] = "mixed"
+    quiz_type: Literal["mcq"] = "mcq"
 
 class QuizOutput(BaseModel):
     quiz: List[QuizQuestion]

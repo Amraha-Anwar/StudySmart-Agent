@@ -1,170 +1,343 @@
-/* @import "tailwindcss/preflight"; */
-@tailwind utilities;
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@theme {
+  /* Palette: deep green desk, white paper, forest ink, parrot-green glow, highlighters, margin red */
+  --color-paper: #0b2e1b;
+  /* Text that sits directly on the dark green page */
+  --color-on-page: #f1f7ef;
+  --color-on-page-soft: #b5cfbb;
+  --color-parrot: #5cc434;
+  --color-parrot-bright: #74d64c;
+  --color-sheet: #ffffff;
+  --color-ink: #0d2416;
+  --color-ink-soft: #24412e;
+  --color-rule: #d3e2d6;
+  --color-highlight: #f7e36b;
+  --color-margin: #c23644;
+  --color-correct: #2e7d57;
+  /* Forest for actions and progress; pink as the second highlighter */
+  --color-pen: #0d2416;
+  --color-pen-deep: #1f4a2d;
+  --color-pen-wash: #eef8e9;
+  --color-pink: #ffb3d1;
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-  --neon-cyan: oklch(0.7 0.25 195);
-  --neon-purple: oklch(0.65 0.28 295);
-  --neon-blue: oklch(0.6 0.3 250);
-  --neon-green: oklch(0.68 0.26 150);
-}
+  /* Tokens the shadcn primitives read */
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-sheet);
+  --color-card-foreground: var(--color-ink);
+  --color-primary: var(--color-pen);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--color-highlight);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted: #eef3ef;
+  --color-muted-foreground: var(--color-ink-soft);
+  --color-accent: #eef3ef;
+  --color-accent-foreground: var(--color-ink);
+  --color-destructive: var(--color-margin);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--color-rule);
+  --color-input: var(--color-rule);
+  --color-ring: var(--color-pen);
 
-.dark {
-  --background: oklch(0.06 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.12 0 0 / 0.8);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.12 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.7 0.25 195);
-  --primary-foreground: oklch(0.06 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.65 0.28 295);
-  --accent-foreground: oklch(0.06 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.15 0 0 / 0.4);
-  --input: oklch(0.15 0 0 / 0.6);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
-}
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-literata), Georgia, "Times New Roman", serif;
 
-@theme inline {
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-neon-cyan: var(--neon-cyan);
-  --color-neon-purple: var(--neon-purple);
-  --color-neon-blue: var(--neon-blue);
-  --color-neon-green: var(--neon-green);
+  --ease-pen: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-rule);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--color-paper);
+    color: var(--color-on-page);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-highlight);
+    color: var(--color-ink);
+  }
+  /* Two-tone ring so focus shows on both the dark page and white sheets */
+  :focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-ink);
   }
 }
 
-/* Add glassmorphic gradient background for dark mode */
-@layer utilities {
-  .glow-cyan {
-    @apply shadow-[0_0_20px_rgba(0,255,255,0.3)];
+@layer components {
+  /* White paper lifted off the green desk */
+  /* White paper glowing off the dark green desk */
+  .lift {
+    box-shadow:
+      0 0 0 1px rgba(116, 214, 76, 0.35),
+      0 0 48px -10px rgba(92, 196, 52, 0.45),
+      0 32px 64px -24px rgba(0, 0, 0, 0.6);
   }
-  .glow-purple {
-    @apply shadow-[0_0_20px_rgba(168,85,247,0.3)];
+
+  /* Ambient light behind every page: two green glows, a warm one low down,
+     and faint graph-paper squares that fade out toward the bottom */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+      radial-gradient(60rem 38rem at 12% -8%, rgba(92, 196, 52, 0.3), transparent 60%),
+      radial-gradient(48rem 34rem at 96% 18%, rgba(116, 214, 76, 0.16), transparent 62%),
+      radial-gradient(44rem 30rem at 50% 115%, rgba(247, 227, 107, 0.09), transparent 60%);
   }
-  .glow-blue {
-    @apply shadow-[0_0_20px_rgba(59,130,246,0.3)];
+  .backdrop::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(241, 247, 239, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(241, 247, 239, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 25%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 25%, transparent 75%);
   }
-  .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl;
+  .backdrop::after {
+    content: "";
+    position: absolute;
+    width: 38rem;
+    height: 38rem;
+    left: -8rem;
+    top: 14rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(92, 196, 52, 0.22), transparent 65%);
+    filter: blur(30px);
+    animation: drift 20s ease-in-out infinite alternate;
   }
-  .glass-lg {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl;
+
+  /* Headline: white fading to soft green, with a green glow */
+  .glow-text {
+    background: linear-gradient(180deg, #ffffff 30%, #c6f2ad 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 28px rgba(92, 196, 52, 0.45));
   }
-  /* Dark gradient background for glassmorphic hero */
-  .gradient-dark {
-    background: linear-gradient(
-      135deg,
-      oklch(0.08 0.08 250) 0%,
-      oklch(0.1 0.06 280) 30%,
-      oklch(0.06 0 0) 60%,
-      oklch(0.09 0.07 195) 100%
+
+  /* Highlighter stroke: sits over the middle of the x-height like a real marker */
+  .hl {
+    background-color: transparent;
+    background-image: linear-gradient(
+      transparent 18%,
+      var(--color-highlight) 18%,
+      var(--color-highlight) 90%,
+      transparent 90%
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding: 0 0.12em;
+    margin: 0 -0.12em;
+    color: inherit;
+  }
+  .hl-pink {
+    background-image: linear-gradient(
+      transparent 18%,
+      var(--color-pink) 18%,
+      var(--color-pink) 90%,
+      transparent 90%
     );
   }
-  /* Added hover glow effects for better interactivity */
-  .hover\:glow-cyan:hover {
-    @apply shadow-[0_0_30px_rgba(0,255,255,0.5)];
+
+  /* Ruled notebook sheet. Text inside must use the 2rem line grid. */
+  .ruled {
+    --margin-x: 2.25rem;
+    --line: 2rem;
+    background-color: var(--color-sheet);
+    background-image:
+      linear-gradient(
+        to right,
+        transparent calc(var(--margin-x) - 0.75rem),
+        color-mix(in srgb, var(--color-margin) 55%, transparent) calc(var(--margin-x) - 0.75rem),
+        color-mix(in srgb, var(--color-margin) 55%, transparent) calc(var(--margin-x) - 0.75rem + 1px),
+        transparent calc(var(--margin-x) - 0.75rem + 1px)
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(var(--line) - 1px),
+        color-mix(in srgb, var(--color-rule) 45%, transparent) calc(var(--line) - 1px),
+        color-mix(in srgb, var(--color-rule) 45%, transparent) var(--line)
+      );
+    padding: calc(var(--line) * 1) 1.25rem calc(var(--line) * 1) var(--margin-x);
   }
-  .hover\:glow-purple:hover {
-    @apply shadow-[0_0_30px_rgba(168,85,247,0.5)];
+  @media (min-width: 640px) {
+    .ruled {
+      --margin-x: 4.5rem;
+      padding-right: 3rem;
+    }
+  }
+
+  /* Summary typography locked to the ruled line grid */
+  .notes {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 2rem;
+    color: var(--color-ink);
+    max-width: 68ch;
+    /* Drop text onto the rule instead of floating between lines */
+    position: relative;
+    top: 0.3rem;
+  }
+  .notes > * + * {
+    margin-top: 2rem;
+  }
+  .notes h2,
+  .notes h3 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.125rem;
+    line-height: 2rem;
+    letter-spacing: -0.01em;
+  }
+  /* Headings marked in pink, the way students switch highlighters for titles */
+  .notes h2,
+  .notes h3 {
+    width: fit-content;
+    background-image: linear-gradient(
+      transparent 58%,
+      var(--color-pink) 58%,
+      var(--color-pink) 88%,
+      transparent 88%
+    );
+    padding-right: 0.2em;
+  }
+  .notes h2 + *,
+  .notes h3 + * {
+    margin-top: 0;
+  }
+  .notes ul,
+  .notes ol {
+    padding-left: 1.25rem;
+  }
+  .notes ul {
+    list-style: disc;
+  }
+  .notes ol {
+    list-style: decimal;
+  }
+  .notes li::marker {
+    color: var(--color-ink-soft);
+  }
+  .notes code {
+    font-size: 0.9em;
+    background: var(--color-pen-wash);
+    border-radius: 3px;
+    padding: 0.1em 0.3em;
+  }
+}
+
+/* Home page demo: one orchestrated sequence, highlight → question → answer */
+@layer components {
+  .demo-hl {
+    background-size: 0% 100%;
+    animation: hl-sweep 0.7s var(--ease-pen) forwards;
+    animation-delay: var(--d, 0s);
+  }
+  .demo-card {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: card-rise 0.6s var(--ease-pen) forwards 2.4s;
+  }
+  .demo-pick {
+    animation: pick 0.35s ease-out forwards 3.3s;
+  }
+  .demo-pick-badge {
+    animation: pick-badge 0.35s ease-out forwards 3.3s;
+  }
+  .demo-pick-check {
+    opacity: 0;
+    animation: fade-in 0.25s ease-out forwards 3.45s;
+  }
+  .result-rise {
+    opacity: 0;
+    animation: fade-in 0.5s ease-out forwards 0.9s;
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translate(55vw, -8rem) scale(1.2);
+  }
+}
+@keyframes hl-sweep {
+  to {
+    background-size: 100% 100%;
+  }
+}
+@keyframes card-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pick {
+  to {
+    border-color: var(--color-correct);
+    background-color: color-mix(in srgb, var(--color-correct) 9%, white);
+  }
+}
+@keyframes pick-badge {
+  to {
+    border-color: var(--color-correct);
+    background-color: var(--color-correct);
+    color: white;
+  }
+}
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes working {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.working-bar {
+  animation: working 1.4s var(--ease-pen) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-hl {
+    animation: none;
+    background-size: 100% 100%;
+  }
+  .demo-card,
+  .demo-pick-check,
+  .result-rise {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .demo-pick,
+  .demo-pick-badge {
+    animation-duration: 0s;
+    animation-delay: 0s;
+  }
+  .working-bar {
+    animation-duration: 3s;
+  }
+  .backdrop::after {
+    animation: none;
   }
 }
